@@ -24,6 +24,7 @@ your pipeline, not giving up.
 
 from dataclasses import dataclass
 
+import re
 import config
 from ingest import Document
 
@@ -80,24 +81,76 @@ def fallback_split(
     return chunks
 
 
-def split_documents(documents: list[Document]) -> list[Chunk]:
+def split_documents(
+    documents: list[Document],
+    chunk_size: int | None = None,
+    overlap: int | None = None,
+) -> list[Chunk]:
     """
-    Split documents into chunks. ⚠️ REPLACE THE BODY OF THIS IN MILESTONE 3.
-
-    Right now it just calls the fallback. That is the plain, generic behaviour
-    the brief is talking about.
-
-    When you write your own strategy, set `produced_by` to
-    "chunker.py::split_documents" so your README's Sample Chunks section names
-    the right function. `app.py chunks` prints that string for you.
-
     Things worth thinking about before you write any code:
       - Are your documents short posts or long guides?
       - Is the useful information in one sentence, or spread over a paragraph?
       - Would splitting on paragraph breaks keep more thoughts intact than
         splitting on a character count?
     """
-    return fallback_split(documents)
+    """
+    Splits each thread into (question + one reply) chunks, using the
+    THREAD / --- reply N (votes) --- structure instead of fixed windows.
+
+    The question is prepended to every chunk, including sub-chunks produced
+    when a single reply is too long to fit in chunk_size — see criterion 4.
+    """
+
+    chunk_size = chunk_size or config.CHUNK_SIZE
+    overlap = overlap or config.CHUNK_OVERLAP
+
+    reply_pattern = re.compile(
+        r"--- reply \d+ \(\d+ votes\) ---\s*\n(.*?)(?=\n--- reply \d+|\Z)",
+        re.DOTALL,
+    )
+
+    chunks: list[Chunk] = []
+    for doc in documents:
+        question_match = re.match(r"THREAD:\s*(.+)", doc.text)
+        if not question_match:
+            continue                                 # skip if doesn't match expected format
+        question = question_match.group(1).strip()
+
+        index = 0
+        for reply_match in reply_pattern.finditer(doc.text):
+            reply_text = reply_match.group(1).strip()
+            combined = f"{question}\n\n{reply_text}"
+
+            if len(combined) <= chunk_size:
+                chunks.append(
+                    Chunk(
+                        text=combined,
+                        source=doc.source,
+                        index=index,
+                        produced_by="chunker.py::split_documents",
+                    )
+                )
+                index += 1
+            else:
+                # Reply itself is too long — window over just the reply,
+                # re-attaching the question to every resulting piece.
+                start = 0
+                budget = chunk_size - len(question) - 2         # room left for reply text
+                while start < len(reply_text):
+                    piece = reply_text[start : start + budget].strip()
+                    if piece:
+                        chunks.append(
+                            Chunk(
+                                text=f"{question}\n\n{piece}",
+                                source=doc.source,
+                                index=index,
+                                produced_by="chunker.py::split_documents",
+                            )
+                        )
+                        index += 1
+                    start += budget - overlap
+
+    return chunks
 
 
 def describe(chunks: list[Chunk]) -> str:
