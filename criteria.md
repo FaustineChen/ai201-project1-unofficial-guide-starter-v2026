@@ -26,6 +26,9 @@ contains the answer.
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
 
+One of my five questions is based on the shorter thread in my corpus (484 characters), which gives the embedding less text to represent that topic — I expect that one to be more fragile than the other four, which are based on longer threads with a clearer signal.
+
+
 ---
 
 ## 2. Every answer names a source
@@ -35,6 +38,7 @@ Every answer the system produces names at least one source document.
 **Why this target:**
 <!-- Why all five and not four? What about your setup makes that achievable —
      or what would have to go wrong for it not to be? -->
+Source attribution is enforced by the output template, not inferred by the LLM — every generated answer is required to include a source field before it's returned.
 
 ---
 
@@ -52,6 +56,7 @@ in at least 4 of 5 tries.
 **Why this target:**
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
+Advice_threads corpus is informal community advice threads with overlapping everyday vocabulary across topics, so I expect some out-of-scope questions to land close to the cutoff by coincidence of wording rather than topic.
 
 ---
 
@@ -68,11 +73,11 @@ in at least 4 of 5 tries.
           sentence cut in half at either end."
        - "No chunk is shorter than 200 characters, since anything below that
           in my corpus turned out to be a heading with no content under it." -->
-
+Every chunk resulting from a thread split retains the original question.
 
 
 **Why this target:**
-
+A chunk without its original question can't be matched against a query phrased around that question, so I want this guaranteed for every split, not left to chance.
 
 
 ---
@@ -86,11 +91,11 @@ in at least 4 of 5 tries.
      handles badly, about source attribution being correct rather than merely
      present — anything, as long as it names a number or an observable
      outcome. -->
-
+When chunks from opposing replies are both retrieved for the same query, the generated answer names both positions rather than presenting one as definitive.
 
 
 **Why this target:**
-
+Advice_threads corpus is explicitly built around threads where replies disagree as often as they agree, so retrieving only one side and presenting it as the answer would misrepresent the source material.
 
 
 ---
