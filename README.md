@@ -27,10 +27,18 @@
 
      Milestone 5. -->
 
+This is a RAG-based Q&A system built over advice_threads, a corpus of 23 real question-and-reply threads where several people respond to the same question, often disagreeing with each other.
+It answers questions the corpus actually discusses related to campus — like clubs or changing major — by retrieving the reply chunks most relevant to the question and naming which thread they came from.
+For questions the threads clearly don't cover, a relevance gate based on cosine distance stops the system from guessing and returns an "I don't have enough information about that" response instead.
+
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 800
+**Overlap:** 120
+
+I replaced the fixed-size window splitter with structure, spliting each thread into (question + one reply) chunks, prepending the question to every chunk.
+
+I didn't tune `chunk_size` or `overlap` beyond their defaults, because this splitting strategy barely uses them: threads averaging 543 characters and replies typically under 200. Question + one reply produces small chunks on its own. `chunk_size` and `overlap` only matters for the case where a single reply is too long to fit — a case that doesn't occur anywhere in current 23-thread corpus. I kept both at reasonable defaults (chunk_size=800) as a safety margin rather than something I actively tuned, since there was nothing in my data to tune them against.
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -153,8 +161,12 @@ That left a gap between 0.72 and 0.82, and I set the cutoff at 0.75, slightly cl
      Milestone 5. -->
 
 **1.**
+I asked Claude to help me write a reply-based chunker to replace the fixed-size window splitter. Working through it, I realized the original chunk_size/overlap parameters barely apply anymore — these threads are short enough that "question + one reply" already produces small chunks, so those parameters only guard an edge case (a single reply exceeding the size limit) that doesn't occur anywhere in my current corpus.
 
 **2.**
+I ask Claude pressure-test the criteria and caught one problem.
+Criterion 4 changed to a deterministic guarantee (prepend the question to every split chunk), since leaving it to chance wasn't something I wanted to accept once I noticed how few threads even exceeded my chunk size.
+
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
