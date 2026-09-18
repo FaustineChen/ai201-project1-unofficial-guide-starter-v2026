@@ -171,3 +171,9 @@ if __name__ == "__main__":
 
     chunks = split_documents(load_documents())
     print(describe(chunks))
+
+    # TEST
+    # print("Below are chunked text")
+    # for chunk in chunks:
+    #     print(chunk.text)
+    #     print("=" * 20)

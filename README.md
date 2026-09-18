@@ -98,11 +98,18 @@ The library being open until 2am is a trap. It's a resource, not a schedule.
 <!-- One complete question and answer, pasted as text, with the source line
      visible. Milestone 4. -->
 
-**Question:**
+**Question:** Is it possible to apply intership in spring?
 
 **Answer:**
 
 ```
+  (best distance 0.661, cutoff 0.75)
+
+Yes, smaller and local places hire in February and March, so you can still apply in the spring if you missed the autumn deadlines (thread_internship_timing.txt).
+
+Sources retrieved: thread_changing_major.txt, thread_first_year_regret.txt, thread_internship_timing.txt, thread_transfer_credits.txt
+
+1 model calls this session, 405 tokens (369 in, 36 out)
 ```
 
 **My relevance cutoff:**
@@ -116,9 +123,23 @@ The library being open until 2am is a trap. It's a resource, not a schedule.
 
      Milestone 4. -->
 
+Across the five in-scope questions, the relevant chunk's distance topped out at 0.72. Across the five out-of-scope questions, the closest chunk never came in under 0.82.
+
+That left a gap between 0.72 and 0.82, and I set the cutoff at 0.75, slightly closer to the in-scope boundary, since missing a real answer felt like a worse failure mode for this use case than occasionally letting an irrelevant chunk through.
+
+
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| Is it difficult to change major to different department? | Y | 0.2675 |
+| What can I do if one teammate is a free-rider? | Y | 0.6626 |
+| Is it possible to apply intership in spring? | Y | 0.6611 |
+| Can I ask about the same context taught in the lecture? | Y | 0.6445 |
+| What can I do if I want to change roommates? | Y | 0.3857 |
+| What is the capital of Mongolia? | N | 0.9213 |
+| How do I change the oil in a diesel engine? | N | 0.8994 |
+| Who won the 1994 World Cup? | N | 0.9173 |
+| What is the recommended dosage of ibuprofen for a headache? | N | 0.8171 |
+|How do I write a for loop in Rust?  | N | 0.8868 |
 
 ## How I Used AI
 
