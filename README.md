@@ -318,11 +318,16 @@ The other two runs, given the identical retrieved chunks, produced an answer wit
 ## The Improvement
 
 **What I changed:**
+Added one line to `GROUNDING_INSTRUCTION`: "If any of the documents mention the topic the question is about, even if the information is incomplete or approximate, use what is there to answer." No other change to retrieval, chunking, or the gate.
+
 
 **Why I picked it:**
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
+- My diagnosis found that criterion miss was a generation-stage failure — the model refused to answer despite retrieving relevant chunks (distance 0.645, well under cutoff)
+ - Because the original prompt gave no threshold for how directly a chunk needs to match the question before it counts as "enough," so this line makes that threshold explicit.
+
 
 ### Run Log — After
 
@@ -331,11 +336,12 @@ The other two runs, given the identical retrieved chunks, produced an answer wit
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. The source document named in the generated answer matches the document that is  identified in advance as containing the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+
+Criteria 4: confirmed by printing every chunk in the corpus via the code below in `chunker.py`
 
 **Did it help?**
 
@@ -345,6 +351,12 @@ The other two runs, given the identical retrieved chunks, produced an answer wit
      tell.
 
      Milestone 4. -->
+
+Yes. Re-running the same question that previously failed on 1 of 3 runs, all 3 runs now produced an answer with a cited source — no refusals.
+
+This fix trades in one direction: the same instruction that stops unwarranted refusals also lowers the bar for what counts as "enough" to answer from.
+
+I didn't observe this in my test runs — the cited sources stayed accurate and the answers didn't mix in unrelated content — but it could plausibly still slip through and get cited even less critically than before.
 
 ## What's Still Broken
 

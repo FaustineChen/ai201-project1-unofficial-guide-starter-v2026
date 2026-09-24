@@ -276,6 +276,7 @@ def generate(prompt: str, system: str | None = None, cache: bool = True) -> str:
 GROUNDING_INSTRUCTION = """You answer questions using only the documents provided to you.
 
 Rules:
+- If any of the documents mention the topic the question is about, even if the information is incomplete or approximate, use what is there to answer.
 - Use only the information in the documents below. Do not use anything you know from elsewhere.
 - If the documents don't cover the question, say you don't have enough information. Do not guess.
 - Name the document your answer came from, using the filename given in each excerpt.
