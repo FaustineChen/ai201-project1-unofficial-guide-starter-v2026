@@ -92,17 +92,16 @@ A chunk without its original question can't be matched against a query phrased a
      present — anything, as long as it names a number or an observable
      outcome. -->
 
-<!-- CHANGE
-When chunks from opposing replies are both retrieved for the same query, the generated answer names both positions rather than presenting one as definitive. -->
+**Old criteria:** When chunks from opposing replies are both retrieved for the same query, the generated answer names both positions rather than presenting one as definitive.
 
-For the five in-corpus test questions, the source document named in the generated answer matches the document that is  identified in advance as containing the answer — in at least 4 of 5 cases.
+**Why change:** Replaced this criterion because "opposing" turned out to be undefinable without a judgment call — some of the replies covered different angles of the same question rather than making conflicting claims, and I couldn't write a fixed rule for what counts as disagreement versus complementary advice. Rather than leave a subjective term in place, I moved to checking source attribution correctness, which surfaced a real gap between Criterion 2 (a source is named) and whether it's the right one.
+
+**New criteria:** For the five in-corpus test questions, the source document named in the generated answer matches the document that is  identified in advance as containing the answer — in at least 4 of 5 cases.
 
 
 
 **Why this target:**
 Criterion 1 only checks that the correct chunk is somewhere in the retrieved list; it says nothing about whether the model actually uses and cites that chunk. Those are different failure points — retrieval can succeed while the model still picks the wrong candidate to answer from. I allow 1 miss out of 5 since this adds a layer of model behavior that retrieval accuracy alone doesn't guarantee.
-
-
 
 
 ---

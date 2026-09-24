@@ -41,6 +41,8 @@ def judge_rapidfuzz(question, expects, answer, results) -> bool:
         fuzz.partial_ratio(expected, generated),
         fuzz.token_set_ratio(expected, generated),
     )
+
+    print(score)
     return score >= 80
 
 
@@ -68,3 +70,5 @@ print(judge_rapidfuzz(question, original_expects, answer, results=None))
 
 rephrased_expects = "Changing majors is usually easy administratively, but it depends on how well your completed credits fit the new major. Switching into a very different department may delay graduation, so it’s best to check with the new department’s adviser."
 print(judge_rapidfuzz(question, rephrased_expects, answer, results=None))
+
+print(judge_rapidfuzz(question, "there is 0 store open at 10PM", "There is no store open at 10 PM", results=None))

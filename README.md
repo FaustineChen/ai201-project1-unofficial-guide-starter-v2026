@@ -167,6 +167,10 @@ I asked Claude to help me write a reply-based chunker to replace the fixed-size 
 I ask Claude pressure-test the criteria and caught one problem.
 Criterion 4 changed to a deterministic guarantee (prepend the question to every split chunk), since leaving it to chance wasn't something I wanted to accept once I noticed how few threads even exceeded my chunk size.
 
+**3.**
+I asked Claude why all my `judge_rapidfuzz` results were coming back False even on answers I'd manually verified as correct. It suggested the issue might be that my expects values were too short compared to the model's full-sentence answers. I tested that by lengthening expects to closely mirror an actual answer's wording — it still failed.
+Going back with that result, Claude pointed out the real issue was word/phrase-level dissimilarity, not length: `rapidfuzz` measures character overlap, so synonyms like "trivial" and "easy" score low regardless of sentence structure. I verified this myself by testing "0" vs "no" in isolation (0 score) versus the same words embedded in matching sentences (93 score) — confirming the tool can't recognize semantic equivalence on its own, only surface overlap.
+
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
@@ -367,6 +371,11 @@ I didn't observe this in my test runs — the cited sources stayed accurate and 
      not.
 
      Milestone 5. -->
+All five criteria are currently MET, but two things are worth flagging rather than treated as fully solved:
+
+- The grounding prompt fix trades in one direction - loosening the refusal threshold. But I haven't tested it against a case where a retrieved chunk is topically adjacent but not actually relevant (retrieve and use the wrong chunk with close distance) — with only 23 threads and 3 runs per question, that boundary case may simply not have come up yet, not because the fix is safe.
+- The long-reply fallback path in split_by_reply (splitting a reply that exceeds chunk_size and re-prepending the question with a length budget) has never been exercised against real data — no reply in the current 23-thread corpus is long enough to trigger it. I haven't verified this path works correctly beyond reading the code; if the corpus grows to include longer replies, this is the part most likely to break.
+- I used `judge_rapidfuzz` to check answer content against my expects answers, but it consistently returns False even for answers I manually verified as correct. I tested this directly by rewriting expects to closely mirror a correct answer's actual wording, and the score still failed, because it measures literal string overlap, not semantic equivalence. I'm not relying on this tool's output anywhere in my five criteria's verdicts, but it means I don't currently have an automated way to check answer content correctness — only source attribution.
 
 ## What I'd Do Differently
 
@@ -374,3 +383,6 @@ I didn't observe this in my test runs — the cited sources stayed accurate and 
      differently, and why?
 
      Milestone 5. -->
+- Criterion 4 wouldn't have needed rewriting if I'd designed it as a guarantee from the start. I initially wrote it as a sampling-based check ("X of Y chunks retain the question"), then realized the corpus was too small for that to be meaningful and switched to prepending the question by construction. Next time I'd ask "can I just make this true by design?" before defaulting to a probabilistic check.
+- I'd pressure-test every criterion against real corpus examples before finalizing it, not after. I'd drop subjective language earlier. My original fifth criterion ("opposing replies... names both positions") sounded reasonable until I tried to define "opposing" — the corpus's replies turned out to be complementary, not contradictory. 
+- I'd verify how a content-correctness check works before trusting it. I picked rapidfuzz after hearing "0" and "no" could be judged similar in class, assumed my LLM/expected answer mismatch were due to expects being too short, and found that lengthening it still failed — which pushed me to realize the real factor is overall wording/structure overlap, not just length. I'd test a tool's actual mechanism on my own inputs like this before trusting it, instead of generalizing from one classroom example.
