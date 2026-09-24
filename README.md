@@ -281,11 +281,12 @@ All chunks in the printed output begin with the original question.
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunk contains the answer | MET | checked against which document I identified in advance as containing the answer |
+| 2 | Every answer names a source | MET | checked for the presence of a cited source |
+| 3 | Gate stops out-of-corpus questions | MET | checked for the exact "I don't have enough information about that" response |
+| 4 | Every chunk resulting from a thread split retains the original question. | MET | printed out and checked against all chunks |
+| 5 | The source document named in the generated answer matches the document that is  identified in advance as containing the answer | MET | comparing the source named in each answer field against the document I identified in advance as containing the answer. |
+
 
 ## Diagnoses
 
