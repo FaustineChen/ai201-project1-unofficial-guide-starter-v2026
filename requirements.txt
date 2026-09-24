@@ -37,6 +37,10 @@ posthog>=3.0,<4.0
 # and it's free at the tier this course uses.
 google-genai>=1.0,<2.0
 
+# Fuzzy string comparison for judging whether a generated answer matches an
+# expected answer in unit 2's RAG scoring logic.
+rapidfuzz>=3.0,<4.0
+
 # Keyword search, for one of unit 2's improvement options. Shipped pinned so
 # it's there if you want it — the implementation is yours to write.
 rank-bm25>=0.2.2,<0.3

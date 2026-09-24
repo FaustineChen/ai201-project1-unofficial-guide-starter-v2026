@@ -36,9 +36,11 @@ import argparse
 import datetime as dt
 import sys
 from pathlib import Path
+from scorer import judge, judge_rapidfuzz
 
 import config
 import questions as qs
+
 
 
 def load_scorer():
@@ -112,7 +114,7 @@ def main():
             answer, results, decision = run_once(
                 question, top_k, threshold, corpus, args.variant
             )
-            passed = judge(question, expects, answer, results) if judge else None
+            passed = judge_rapidfuzz(question, expects, answer, results) if judge else None
             run_results.append(passed)
 
             mark = {True: "pass", False: "fail", None: "—"}[passed]

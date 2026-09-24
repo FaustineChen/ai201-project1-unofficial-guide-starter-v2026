@@ -91,11 +91,18 @@ A chunk without its original question can't be matched against a query phrased a
      handles badly, about source attribution being correct rather than merely
      present — anything, as long as it names a number or an observable
      outcome. -->
-When chunks from opposing replies are both retrieved for the same query, the generated answer names both positions rather than presenting one as definitive.
+
+<!-- CHANGE
+When chunks from opposing replies are both retrieved for the same query, the generated answer names both positions rather than presenting one as definitive. -->
+
+For the five in-corpus test questions, the source document named in the generated answer matches the document that is  identified in advance as containing the answer — in at least 4 of 5 cases.
+
 
 
 **Why this target:**
-Advice_threads corpus is explicitly built around threads where replies disagree as often as they agree, so retrieving only one side and presenting it as the answer would misrepresent the source material.
+Criterion 1 only checks that the correct chunk is somewhere in the retrieved list; it says nothing about whether the model actually uses and cites that chunk. Those are different failure points — retrieval can succeed while the model still picks the wrong candidate to answer from. I allow 1 miss out of 5 since this adds a layer of model behavior that retrieval accuracy alone doesn't guarantee.
+
+
 
 
 ---
