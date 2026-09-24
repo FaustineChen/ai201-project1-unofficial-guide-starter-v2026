@@ -204,7 +204,7 @@ Criterion 4 changed to a deterministic guarantee (prepend the question to every 
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
 
-*For criteria 1, 2, 5*
+**For criteria 1, 2, 5**
 All results below (Criteria 1, 2, 5) are produced by `python run_eval.py`, and records the output to `run_2026-09-23_2032.md`
 
 - Criteria 1: Verified from the `sources retrieved` field for each in-corpus question in `eval_results.md`
@@ -242,7 +242,7 @@ I do not have enough information to answer your question based on the provided d
 ```
 ```
 
-*For criteria 3*
+**For criteria 3**
 - Criteria 3: Verified by running `python app.py ask "..."` for each of the 5 OUT_OF_SCOPE questions
 
 ```bash
@@ -254,7 +254,7 @@ I don't have enough information about that.
 0 model calls this session
 ```
 
-*For criteria 4*
+**For criteria 4**
 - Criteria 4: confirmed by printing every chunk in the corpus via the code below in `chunker.py`
 
 ​```python
@@ -307,6 +307,13 @@ All chunks in the printed output begin with the original question.
      low, and which one you'd tighten and to what.
 
      Milestone 3. -->
+**Criterion 2, Run 2** — stage: generation
+
+The question "Can I ask about the same context taught in the lecture?" retrieved three relevant chunks (distance 0.645, well under the 0.75 cutoff) — retrieval worked correctly, and the same chunks were retrieved in the other two runs that succeeded.
+The failure happened at the generation stage: on this run, the model judged that none of the three retrieved chunks (about late work, office hours etiquette, and textbook editions) directly answered the question, and returned "I do not have enough information" instead of citing any source.
+The other two runs, given the identical retrieved chunks, produced an answer with a citation. Since nothing upstream (retrieval, distance, gate) changed between runs, the difference is generation-time variance in how the model judges whether retrieved content is sufficient to answer — not a retrieval or chunking problem.
+
+**Criterion 5, Run 2** — same root cause as Criterion 2 above: no source was cited on this run, so there was no source to compare against the correct document. This is a generation-stage failure, not a retrieval-stage failure — see diagnosis above.
 
 ## The Improvement
 
