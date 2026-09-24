@@ -195,15 +195,78 @@ Criterion 4 changed to a deterministic guarantee (prepend the question to every 
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 4/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. The source document named in the generated answer matches the document that is  identified in advance as containing the answer | 4 of 5 | 5/5 | 4/5 | 5/5 | MET |
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
+
+*For criteria 1, 2, 5*
+All results below (Criteria 1, 2, 5) are produced by `python run_eval.py`, and records the output to `run_2026-09-23_2032.md`
+
+- Criteria 1: Verified from the `sources retrieved` field for each in-corpus question in `eval_results.md`
+- Criteria 2: Verified from the `answer` field for each in-corpus question
+- Criteria 5: Verified by comparing the source named in each `answer` field against the document I identified in advance as containing the answer.
+
+```text
+### What can I do if one teammate is a free-rider? — run 2
+
+- Best distance: 0.6626 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_group_project.txt
+
+```
+To handle a teammate who disappears (acts as a free-rider), you should split the work into independent pieces so their absence doesn't sink everyone, document your progress early, and raise the issue with the instructor before the deadline so they can adjust individual grades. 
+
+Source: `thread_group_project.txt`
+```
+
+### Can I ask about the same context taught in the lecture? — run 1
+
+- Best distance: 0.6445 (passed the gate)
+- Sources retrieved: thread_late_work.txt, thread_office_hours_etiquette.txt, thread_textbook_editions.txt
+
+```
+Based on the documents, it is completely normal to go to office hours to say, "I'm following the lectures but I don't feel like I understand the shape of it" (thread_office_hours_etiquette.txt).
+```
+
+### Can I ask about the same context taught in the lecture? — run 2
+
+- Best distance: 0.6445 (passed the gate)
+- Sources retrieved: thread_late_work.txt, thread_office_hours_etiquette.txt, thread_textbook_editions.txt
+
+```
+I do not have enough information to answer your question based on the provided documents.
+```
+```
+
+*For criteria 3*
+- Criteria 3: Verified by running `python app.py ask "..."` for each of the 5 OUT_OF_SCOPE questions
+
+```bash
+python app.py ask "What is the capital of Mongolia?"-unofficial-guide-starter-v2026> 
+  (best distance 0.921, cutoff 0.75)
+
+I don't have enough information about that.
+
+0 model calls this session
+```
+
+*For criteria 4*
+- Criteria 4: confirmed by printing every chunk in the corpus via the code below in `chunker.py`
+
+​```python
+print("Below are chunked text")
+for chunk in chunks:
+    print(chunk.text)
+    print("=" * 60)
+​```
+
+All chunks in the printed output begin with the original question.
+
+
 
 ## Verdicts
 

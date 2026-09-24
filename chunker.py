@@ -173,7 +173,7 @@ if __name__ == "__main__":
     print(describe(chunks))
 
     # TEST
-    # print("Below are chunked text")
-    # for chunk in chunks:
-    #     print(chunk.text)
-    #     print("=" * 20)
+    print("Below are chunked text")
+    for chunk in chunks:
+        print(chunk.text)
+        print("=" * 60)
