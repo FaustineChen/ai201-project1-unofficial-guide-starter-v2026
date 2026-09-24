@@ -221,29 +221,27 @@ All results below (Criteria 1, 2, 5) are produced by `python run_eval.py`, and r
 - Best distance: 0.6626 (passed the gate)
 - Sources retrieved: thread_bike_commute.txt, thread_group_project.txt
 
-```
 To handle a teammate who disappears (acts as a free-rider), you should split the work into independent pieces so their absence doesn't sink everyone, document your progress early, and raise the issue with the instructor before the deadline so they can adjust individual grades. 
 
 Source: `thread_group_project.txt`
 ```
 
+```text
 ### Can I ask about the same context taught in the lecture? — run 1
 
 - Best distance: 0.6445 (passed the gate)
 - Sources retrieved: thread_late_work.txt, thread_office_hours_etiquette.txt, thread_textbook_editions.txt
 
-```
 Based on the documents, it is completely normal to go to office hours to say, "I'm following the lectures but I don't feel like I understand the shape of it" (thread_office_hours_etiquette.txt).
 ```
-
+```text
 ### Can I ask about the same context taught in the lecture? — run 2
 
 - Best distance: 0.6445 (passed the gate)
 - Sources retrieved: thread_late_work.txt, thread_office_hours_etiquette.txt, thread_textbook_editions.txt
 
-```
 I do not have enough information to answer your question based on the provided documents.
-```
+
 ```
 
 **For criteria 3**
@@ -261,12 +259,12 @@ I don't have enough information about that.
 **For criteria 4**
 - Criteria 4: confirmed by printing every chunk in the corpus via the code below in `chunker.py`
 
-​```python
+```python
 print("Below are chunked text")
 for chunk in chunks:
-    print(chunk.text)
-    print("=" * 60)
-​```
+  print(chunk.text)
+  print("=" * 60)
+```
 
 All chunks in the printed output begin with the original question.
 
