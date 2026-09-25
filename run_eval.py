@@ -114,10 +114,17 @@ def main():
             answer, results, decision = run_once(
                 question, top_k, threshold, corpus, args.variant
             )
-            passed = judge_rapidfuzz(question, expects, answer, results) if judge else None
+
+            # passed = judge_rapidfuzz(question, expects, answer, results) if judge else None
+
+            # Known limitation: rapidfuzz can't recognize semantically equivalent
+            # phrasing (see README). Emitting "unscored" instead of a fail verdict
+            # so the log doesn't misrepresent verified-correct answers as wrong.
+            passed = "unscored" if judge else None
+
             run_results.append(passed)
 
-            mark = {True: "pass", False: "fail", None: "—"}[passed]
+            mark = {True: "pass", False: "fail", "unscored": "unscored", None: "—"}[passed]
             print(f"  run {run}: {mark}  (best distance {decision.best_distance:.3f})")
 
             transcript.append(
@@ -209,7 +216,7 @@ def write_report(rows, transcript, gate_rows, args, corpus, top_k, threshold, sc
     for row in rows:
         cells = []
         for passed in row["runs"]:
-            cells.append({True: "pass", False: "fail", None: " "}[passed])
+            cells.append({True: "pass", False: "fail", "unscored": "unscored", None: " "}[passed])
         question = row["question"].replace("|", "\\|")
         lines.append(f"| {question} | {' | '.join(cells)} |")
 

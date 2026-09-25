@@ -131,6 +131,7 @@ def split_documents(
                     )
                 )
                 index += 1
+
             else:
                 # Reply itself is too long — window over just the reply,
                 # re-attaching the question to every resulting piece.
