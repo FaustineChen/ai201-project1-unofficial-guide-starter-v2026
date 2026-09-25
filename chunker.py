@@ -132,6 +132,11 @@ def split_documents(
                 )
                 index += 1
 
+                # check every chunk resulting from a thread split retains the original question
+                assert combined.startswith(question), (
+                    f"Chunk from {doc.source} does not start with the question"
+                )
+
             else:
                 # Reply itself is too long — window over just the reply,
                 # re-attaching the question to every resulting piece.
@@ -140,9 +145,10 @@ def split_documents(
                 while start < len(reply_text):
                     piece = reply_text[start : start + budget].strip()
                     if piece:
+                        combined_piece = f"{question}\n\n{piece}"
                         chunks.append(
                             Chunk(
-                                text=f"{question}\n\n{piece}",
+                                text=combined_piece,
                                 source=doc.source,
                                 index=index,
                                 produced_by="chunker.py::split_documents",
@@ -150,6 +156,11 @@ def split_documents(
                         )
                         index += 1
                     start += budget - overlap
+
+                    # check every chunk resulting from a thread split retains the original question
+                    assert combined_piece.startswith(question), (
+                        f"Split chunk from {doc.source} does not start with the question"
+                    )
 
     return chunks
 
